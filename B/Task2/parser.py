@@ -5,7 +5,7 @@ parser.add_argument("-up", help="sort the output in ascending order, this is the
 parser.add_argument("-down", help="sort the output in descending order", action="store_true")
 args = parser.parse_args()
 
-def splitJsonSeries(inputString):
+def readJsonSeries(inputString):
     inputJson = []
     
     def munchArray():
@@ -30,8 +30,8 @@ def splitJsonSeries(inputString):
             raise Exception("Object does not have string this property")
         inputJson.append(obj)
         return inputString[jsonEnd+1:].strip()
+    
     while len(inputString) != 0:
-
         firstCharacter = inputString[0]
         if firstCharacter == "[":
             inputString = munchArray()
@@ -45,13 +45,15 @@ def splitJsonSeries(inputString):
                              
 
 inputJson = sys.stdin.read()
-inputSplit = splitJsonSeries(inputJson)
-def getString(inputtedJson):
+jsonSeries = readJsonSeries(inputJson)
+
+def getKeyString(inputtedJson):
     if isinstance(inputtedJson, list):
         return inputtedJson[0]
     elif isinstance(inputtedJson, dict):
         return inputtedJson["this"]
     else:
         return inputtedJson
-inputSplit.sort(key=getString, reverse=args.down)
-print(inputSplit)
+
+jsonSeries.sort(key=getKeyString, reverse=args.down)
+print(jsonSeries)
