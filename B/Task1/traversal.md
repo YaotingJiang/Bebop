@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A labyrinth is a representation of a simple graph with named nodes and undirected eges. Each node may have a color token as well. Labyrinth is a singular module with the following functions on it.
+A labyrinth is a representation of a simple graph with named nodes and undirected eges. Each node may have a color token as well. Labyrinth is a singular module with the following functions on it. The module is written in Python 3.
 
 ## Methods
 
