@@ -48,12 +48,7 @@ if __name__ == "__main__":
     group.add_argument('-down', action='store_true', default=False)
     args = parser.parse_args()
 
-    if not args.up and not args.down:
-        ascending = True
-    elif args.down:
-        ascending = False
-    else:
-        ascending = True
+    ascending = not args.down
 
     for line in sys.stdin:
         buffer += line
