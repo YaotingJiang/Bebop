@@ -1,6 +1,26 @@
 import sys
 from builtins import isinstance
 from json import JSONDecoder, JSONDecodeError
+import argparse
+
+
+def key_str(o):
+    if isinstance(o, str):
+        return o
+    if isinstance(o, list):
+        return o[0]
+    else:
+        return o["this"]
+
+
+def filter_json(obj):
+    if isinstance(obj, str):
+        return True
+    if isinstance(obj, list) and obj and isinstance(obj[0], str):
+        return True
+    if isinstance(obj, dict) and obj.get("this") is not None and isinstance(obj["this"], str):
+        return True
+    return False
 
 
 def extract_json(json_string):
@@ -13,7 +33,7 @@ def extract_json(json_string):
         except JSONDecodeError:
             raise
         else:
-            if not isinstance(json_obj, bool or int or float) and json_obj is not None:
+            if filter_json(json_obj):
                 results.append(json_obj)
             json_string = json_string[end_index+1:]
 
@@ -22,9 +42,26 @@ def extract_json(json_string):
 
 if __name__ == "__main__":
     buffer = ''
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-up', action='store_true', default=False)
+    group.add_argument('-down', action='store_true', default=False)
+    args = parser.parse_args()
+
+    if not args.up and not args.down:
+        ascending = True
+    elif args.down:
+        ascending = False
+    else:
+        ascending = True
 
     for line in sys.stdin:
         buffer += line
 
-    for obj in extract_json(buffer):
+    results_obj = extract_json(buffer)
+
+    sorted_object = sorted(results_obj, key=key_str, reverse=not ascending)
+
+    for obj in sorted_object:
         print(obj)
+
